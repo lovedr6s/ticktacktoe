@@ -5,8 +5,10 @@ import webview
 from dotenv import load_dotenv
 import threading
 import os
+import json
 from bot import bot_move
 from playsound import playsound
+from time import sleep
 
 load_dotenv()
 app = Flask(__name__)
@@ -38,33 +40,56 @@ default_buttons = [';3'] * 9
 
 
 @app.route('/')
-def index():
-    if 'buttons' not in session:
-        session['buttons'] = default_buttons.copy()
-    return render_template('game.html', buttons=session['buttons'])
+def index():                           
+    return render_template('login.html')
 
 
 @app.post('/')
+def index_click():
+    args = request.form.get('login')
+    user = request.form.get('name', None)
+    if args == 'login':
+        with open('users_score.json', 'r') as file:
+            data = json.load(file)
+        data.append({'player': user, 'time': 1})
+        with open('users_score.json', 'w') as file:
+            json.dump(data, file, indent=4)
+        return redirect(url_for('game'))
+    elif args == 'check_users':
+        with open('users_score.json') as file:
+            data = json.load(file)
+            print(data)
+        return render_template('users.html', users=data)
+
+
+@app.get('/game')
+def game():
+    if 'buttons' not in session:
+        session['buttons'] = default_buttons.copy()    
+    return render_template('game.html', buttons=session['buttons'])
+
+@app.post('/game')
 def get_clicked_number():
     threading.Thread(target=play_sound, daemon=True).start()
     button_value = request.form.get('button')
     if button_value is None:    
-        return redirect(url_for('index'))
+        return redirect(url_for('game'))
     
     get_button_number = int(button_value)
     if session['buttons'][get_button_number] == ';3':
         session['buttons'][get_button_number] = x
         session.modified = True
-    session['buttons'] = bot_move(session['buttons'], o, x)
-    session.modified = True
+        session['buttons'] = bot_move(session['buttons'], o, x)
+        session.modified = True
     win = winning_combinations(session['buttons'])
+
     if win == 'shit':
         session.pop('buttons', None)
-        return redirect(url_for('index'))
+        return redirect(url_for('game'))
     elif win:
         session['winner'] = win
         return render_template('winner.html', winner=win)
-    return redirect(url_for('index'))
+    return redirect(url_for('game'))
 
 
 @app.post('/reset')
@@ -72,7 +97,7 @@ def reset_values():
     threading.Thread(target=play_sound, daemon=True).start()
     session['buttons'] = default_buttons.copy()
     session['winner'] = None
-    return redirect(url_for('index'))
+    return redirect(url_for('game'))
 
 
 def run_flask():

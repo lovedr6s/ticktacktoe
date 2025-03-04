@@ -1,7 +1,16 @@
 {% extends 'main.html' %}
 {% block content %}
 <div class="winner">
-    <h1>Congradulations, {{ winner }}! :3</h1>
-    <p>You won, cutie</p>
+    <div class="upper_text">
+        <h2>Congradulations, {{ winner }}! :3</h2>
+    </div>
+    <div class="text">
+        <p>You won, cutie! That's my first game which were made on python and flask. i hope you enjoyed it</p>
+    </div>
+    <div class="reset">
+        <form action="{{ url_for('reset_values') }}" method="post">
+            <button type="submit" name="reset">Reset</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
