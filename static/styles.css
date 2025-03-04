@@ -1,0 +1,42 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('background.jpeg');
+    background-size: cover;
+}
+
+.upper_text {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.game {
+    display: flex;
+    flex-direction: column;  /* Располагаем элементы вертикально */
+    align-items: center;
+    margin: 15px;
+}
+form {
+    display: flex;
+    flex-direction: column; /* Располагаем кнопки по строкам */
+    align-items: center;
+}
+button {
+    width: 70px;
+    height: 70px;
+    margin: 5px;
+    font-size: 24px;
+    text-align: center;
+    line-height: 50px;
+    border: 1px solid #000000;
+    background-color: #FFE4E1;
+}
