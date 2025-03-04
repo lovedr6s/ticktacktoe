@@ -9,6 +9,9 @@
             <div class="text_input">
                 <input type="text" name="name">
             </div>
+            {% with messages = get_flashed_messages() %} 
+                <p style="min-height: 20px">{{ messages[0] if messages else ''}}</p>
+            {% endwith %}
             <div class="buttons_sex">
                 <button name="login" value="login">login</button>
                 <button name="login" value="check_users">users</button>

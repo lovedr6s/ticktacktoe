@@ -1,5 +1,5 @@
 from flask import (
-    Flask, request, render_template, redirect, url_for, session
+    Flask, request, render_template, redirect, url_for, session, flash
 )
 import webview
 from dotenv import load_dotenv
@@ -43,17 +43,40 @@ default_buttons = [';3'] * 9
 def index():                           
     return render_template('login.html')
 
+def give_user_balls(user):
+    with open('users_score.json', 'r') as file:
+        data = json.load(file)
+        for entry in data:
+            if entry['player'] == user:
+                entry['time'] += 1
+                break
+    with open('users_score.json', 'w') as file:
+        json.dump(data, file, indent=4)
+
+
+def add_user(user):
+    with open('users_score.json', 'r') as file:
+        data = json.load(file)
+
+        for entry in data:
+            if entry['player'] == user.strip():
+                entry['time'] += 1
+                break
+        else:
+            data.append({'player': user.strip(), 'time': 0})
+
+    with open('users_score.json', 'w') as file:
+        json.dump(data, file, indent=4)
 
 @app.post('/')
 def index_click():
     args = request.form.get('login')
-    user = request.form.get('name', None)
+    session['user'] = request.form.get('name', None)
     if args == 'login':
-        with open('users_score.json', 'r') as file:
-            data = json.load(file)
-        data.append({'player': user, 'time': 1})
-        with open('users_score.json', 'w') as file:
-            json.dump(data, file, indent=4)
+        if not session['user']:
+            flash("User can't be blank faggot!")
+            return redirect(url_for('index'))
+        add_user(session['user'])
         return redirect(url_for('game'))
     elif args == 'check_users':
         with open('users_score.json') as file:
@@ -79,16 +102,22 @@ def get_clicked_number():
     if session['buttons'][get_button_number] == ';3':
         session['buttons'][get_button_number] = x
         session.modified = True
-        session['buttons'] = bot_move(session['buttons'], o, x)
-        session.modified = True
+        if not winning_combinations(session['buttons']):
+            session['buttons'] = bot_move(session['buttons'], o, x)
+            session.modified = True
     win = winning_combinations(session['buttons'])
 
     if win == 'shit':
         session.pop('buttons', None)
         return redirect(url_for('game'))
     elif win:
-        session['winner'] = win
-        return render_template('winner.html', winner=win)
+        if win == 'X':
+            give_user_balls(session['user'])
+            return render_template('winner.html', winner=session['user'])
+        elif win == 'O':
+            session['winner'] = None
+            flash('Bot has won you noob')
+            return redirect(url_for('game'))
     return redirect(url_for('game'))
 
 

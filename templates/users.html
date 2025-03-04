@@ -1,10 +1,13 @@
 {% extends 'main.html' %}
 {% block content %}
 <ul>
+    <div class="user-list">
     {% if users %}
         {% for user in users %}
-        <li>{{ user['player'] }}: {{ user['time'] }}</li>
+        <li><h3>{{ user['player'] }}:</h3><p>{{ user['time'] }}</p></li>
+        <hr style="border: 0.5px solid black;">
         {% endfor %}
     {% endif %}
+    </div>
 </ul>
 {% endblock %}

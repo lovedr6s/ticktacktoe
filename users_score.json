@@ -1,14 +1,18 @@
 [
     {
         "player": "pasha",
-        "time": 1
+        "time": 20
     },
     {
-        "player": "lox",
-        "time": 2
+        "player": "dasha",
+        "time": 0
     },
     {
-        "player": "",
-        "time": 1
+        "player": "Hehehe",
+        "time": 0
+    },
+    {
+        "player": "Pasha",
+        "time": 4
     }
 ]
