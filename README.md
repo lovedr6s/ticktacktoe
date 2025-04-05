@@ -1,5 +1,6 @@
 ## TikTakToe
 A cute and simple Tic-Tac-Toe game with a friendly interface.
+![image](https://github.com/user-attachments/assets/4bdce3b5-c582-451b-b265-180b834f1ee4)
 
 ### Features
 - Classic Tic-Tac-Toe gameplay
